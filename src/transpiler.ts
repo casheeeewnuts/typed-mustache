@@ -4,15 +4,19 @@ import {TemplateSpans} from "./mustache";
 const sourceText = `
 type RAW_VALUE = 'text';
 type ESCAPED_VALUE = 'name';
+
 type UNESCAPED_VALUE = '&';
 `
 
-const a = TS.factory.createTypeAliasDeclaration(undefined, undefined, "PARTIAL", undefined, TS.factory.createLiteralTypeNode(TS.factory.createStringLiteral("&")))
+const a = TS.factory.createTypeAliasDeclaration(undefined, undefined, "PARTIAL", undefined, TS.factory.createLiteralTypeNode(TS.factory.createStringLiteral(">")))
 function transpiler(spans?: TemplateSpans) {
+  const printer = TS.createPrinter({ newLine: TS.NewLineKind.LineFeed })
   const _source = TS.createSourceFile("", sourceText, ScriptTarget.Latest)
   const source = TS.factory.createSourceFile([..._source.statements, a], TS.factory.createToken(SyntaxKind.EndOfFileToken), NodeFlags.TypeExcludesFlags)
   // so
   // TS.forEachChild(source, console.log)
+
+  return printer.printFile(source)
 }
 
-transpiler()
+console.log(transpiler())
