@@ -1,47 +1,58 @@
 import mustache from "mustache"
-import { OpeningAndClosingTags, TemplateSpans, Token } from "./mustache"
+import { OpeningAndClosingTags, TemplateSpans } from "./mustache"
 
-function tokenize(
+export function tokenize(
   template: string,
   tags?: OpeningAndClosingTags
-): TemplateSpans {
-  return mustache.parse(template, tags)
+): Token[] {
+  return mustache.parse(template, tags).map(transform)
 }
 
-interface Atom {
-  type: string
-  start: number
-  end: number
+function transform(span: TemplateSpans[number]): Token {
+  const [tag, value, start, end, children, what, e] = span
+
+  if (children == null) {
+    return {
+      type: "text",
+      value,
+      start,
+      end,
+    }
+  } else if (Array.isArray(children)) {
+    return {
+      type: "variable",
+      name: value,
+      start,
+      end,
+      children: children.map(transform),
+      what: 0,
+    }
+  } else {
+    return {
+      type: "text",
+      value,
+      start,
+      end,
+    }
+  }
 }
+
+type Token = RawText | Variable
 
 interface RawText extends Atom {
-  type: "test"
+  type: "text"
   value: string
 }
 
 interface Variable extends Atom {
   type: "variable"
   name: string
-  children: any
+  children: Token[]
   what: any
 }
 
-function isRawText([span]: Token): boolean {
-  return span === "text"
-}
-
-function isEscapedVariable([span]: Token): boolean {
-  return span === "name"
-}
-
-function isSection([span]: Token): boolean {
-  return span === "#"
-}
-
-function isInverted([span]: Token): boolean {
-  return span === "^"
-}
-
-function isComment([span]: Token): boolean {
-  return span === "!"
+interface Atom {
+  type: string
+  start: number
+  end: number
 }
