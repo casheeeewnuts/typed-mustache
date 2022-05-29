@@ -1,7 +1,29 @@
-import mustache from "mustache";
+import mustache from "mustache"
+import { OpeningAndClosingTags, TemplateSpans, Token } from "./mustache"
 
-function tokenize(template: string, tags?: OpeningAndClosingTags): TemplateSpans {
+function tokenize(
+  template: string,
+  tags?: OpeningAndClosingTags
+): TemplateSpans {
   return mustache.parse(template, tags)
+}
+
+interface Atom {
+  type: string
+  start: number
+  end: number
+}
+
+interface RawText extends Atom {
+  type: "test"
+  value: string
+}
+
+interface Variable extends Atom {
+  type: "variable"
+  name: string
+  children: any
+  what: any
 }
 
 function isRawText([span]: Token): boolean {

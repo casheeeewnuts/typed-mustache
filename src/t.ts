@@ -1,19 +1,11 @@
-import mustache from "mustache"
+import mustache, { render } from "mustache"
 
-const template = "hello! {{age}} {{#users}}{{name}}{{/users}} {{^users}}{{/users}} {{user.name}} {{{ kinf }}}"
+const template = "hello! {{#age}}ki{{/age}}"
 
 console.log(mustache.parse(template))
-console.log(mustache.render(template, {
-  age: "shu",
-  users: [
-    {
-      name: "kei"
-    },
-    {
-      name: "hei"
-    }
-  ],
-  user: {
-    name: "mustache"
-  }
-}))
+console.log(
+  mustache.render(template, {
+    age: () => (text: string, render: (text: string) => string) =>
+      `ki${render(text)}ki`,
+  })
+)
