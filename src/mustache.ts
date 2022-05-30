@@ -1,3 +1,5 @@
+import mustache from "mustache"
+
 type RAW_VALUE = "text"
 type ESCAPED_VALUE = "name"
 type UNESCAPED_VALUE = "&"
@@ -28,3 +30,10 @@ export type Token = TemplateSpans[number]
 type OpeningTag = string
 type ClosingTag = string
 export type OpeningAndClosingTags = [OpeningTag, ClosingTag]
+
+const render: typeof mustache["render"] = <T>(
+  template: string,
+  view: any,
+  partials: T,
+  tagsOrOptions: OpeningAndClosingTags | undefined
+) => mustache.render(template, view, partials, tagsOrOptions)
