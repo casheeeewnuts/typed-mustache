@@ -9,25 +9,43 @@ export function tokenize(template: string, tags?: OpeningAndClosingTags): Root {
 }
 
 function transform(span: TemplateSpans[number]): Token {
-  const [tag, value, start, end, children, what, e] = span
+  const [tag, value, start, end, children, tagIndex, lineHasNonSpace] = span
 
-  if (e && what && typeof children == "string") {
+  if (lineHasNonSpace != null && tagIndex && typeof children == "string") {
     return {
       type: "partial",
-      name: value,
+      value,
       start,
       end,
-      nazo: children,
-      nazo2: what,
-      nazo3: e,
+      indentation: children,
+      tagIndex,
+      lineHasNonSpace,
     }
   } else if (Array.isArray(children)) {
-    return {
-      type: "section",
-      name: value,
-      start,
-      end,
-      children: children.map(transform),
+    if (value.endsWith("?")) {
+      return {
+        type: "nonFalseValue",
+        value,
+        start,
+        end,
+        children: children.map(transform),
+      }
+    } else if (tag === "^") {
+      return {
+        type: "invertedSection",
+        value,
+        start,
+        end,
+        children: children.map(transform),
+      }
+    } else {
+      return {
+        type: "section",
+        value,
+        start,
+        end,
+        children: children.map(transform),
+      }
     }
   } else {
     if (tag === "!") {
@@ -54,7 +72,7 @@ function transform(span: TemplateSpans[number]): Token {
     } else if (tag === "name" || tag === "&") {
       return {
         type: "variable",
-        name: value,
+        value,
         start,
         end,
       }
@@ -69,44 +87,57 @@ export interface Root {
   children: Token[]
 }
 
-export type Token = RawText | Variable | Section | Comment | Partial | Delimiter
+export type Token =
+  | RawText
+  | Variable
+  | Section
+  | InvertedSection
+  | Comment
+  | Partial
+  | Delimiter
+  | NonFalseValue
 
 interface RawText extends Atom {
   type: "text"
-  value: string
 }
 
-interface Variable extends Atom {
+export interface Variable extends Atom {
   type: "variable"
-  name: string
 }
 
-interface Section extends Atom {
+export interface Section extends Atom {
   type: "section"
-  name: string
+  children: Token[]
+}
+
+export interface InvertedSection extends Atom {
+  type: "invertedSection"
+  children: Token[]
+}
+
+interface NonFalseValue extends Atom {
+  type: "nonFalseValue"
   children: Token[]
 }
 
 interface Comment extends Atom {
   type: "comment"
-  value: string
 }
 
 interface Partial extends Atom {
   type: "partial"
-  name: string
-  nazo: string
-  nazo2: number
-  nazo3: boolean
+  indentation: string
+  tagIndex: number
+  lineHasNonSpace: boolean
 }
 
 interface Delimiter extends Atom {
   type: "delimiter"
-  value: string
 }
 
 interface Atom {
   type: string
+  value: string
   start: number
   end: number
 }
