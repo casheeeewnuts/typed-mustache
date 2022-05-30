@@ -1,11 +1,5 @@
-import TS, {
-  factory,
-  NodeFlags,
-  ScriptTarget,
-  SyntaxKind,
-  TypeNode,
-} from "typescript"
-import { TemplateSpans } from "./mustache"
+import TS, { factory, SyntaxKind, TypeNode } from "typescript"
+import { Root, Token } from "./tokenizer"
 
 const sourceText = `
 type RAW_VALUE = 'text';
@@ -42,19 +36,21 @@ const b = TS.factory.createTypeAliasDeclaration(
   ])
 )
 
-function transpiler(spans?: TemplateSpans) {
-  const printer = TS.createPrinter({ newLine: TS.NewLineKind.LineFeed })
-  const _source = TS.createSourceFile("", sourceText, ScriptTarget.Latest)
-  const source = TS.factory.createSourceFile(
-    [..._source.statements, a, b],
-    TS.factory.createToken(SyntaxKind.EndOfFileToken),
-    NodeFlags.TypeExcludesFlags
-  )
-
-  // so
-  // TS.forEachChild(source, console.log)
-
-  return printer.printFile(source)
+export function transpile(token: Root): TS.TypeLiteralNode
+export function transpile(token: Token): any
+export function transpile(token: Root | Token): any {
+  if (token.type === "root") {
+    return factory.createTypeLiteralNode(token.children.map(transpile))
+  } else {
+    if (token.type === "text") {
+      return
+    } else if (token.type === "variable") {
+      return factory.createPropertySignature(
+        undefined,
+        token.name,
+        undefined,
+        factory.createKeywordTypeNode(SyntaxKind.StringKeyword)
+      )
+    }
+  }
 }
-
-console.log(transpiler())
