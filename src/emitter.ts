@@ -3,7 +3,7 @@ import TS, { factory, NodeFlags, SyntaxKind, TypeNode } from "typescript"
 export function emit(printer: TS.Printer, statement: TypeNode, name: string) {
   const typeAlias = factory.createTypeAliasDeclaration(
     undefined,
-    undefined,
+    [factory.createToken(SyntaxKind.ExportKeyword)],
     name,
     undefined,
     statement
