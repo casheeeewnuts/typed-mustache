@@ -64,7 +64,7 @@ function transformSection(
         UnionType(BoolType(), ArrayType(merge(token.children, option)))
       )
     } else {
-      PropertyType(
+      return PropertyType(
         token.value,
         UnionType(
           BoolType(),
