@@ -3,7 +3,7 @@ import TS, { factory, NodeFlags, SyntaxKind, TypeNode } from "typescript"
 export function emit(printer: TS.Printer, statement: TypeNode, name: string) {
   const typeAlias = factory.createTypeAliasDeclaration(
     undefined,
-    [factory.createToken(SyntaxKind.ExportKeyword)],
+    [Export()],
     name,
     undefined,
     statement
@@ -17,3 +17,5 @@ export function emit(printer: TS.Printer, statement: TypeNode, name: string) {
 
   return printer.printFile(source)
 }
+
+const Export = () => factory.createToken(SyntaxKind.ExportKeyword)
