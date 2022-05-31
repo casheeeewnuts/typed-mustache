@@ -14,6 +14,18 @@ export function compile(
   return merge(token.children, option)
 }
 
+function merge(
+  tokens: Token[],
+  option: Readonly<CompilerOptions>
+): TS.TypeLiteralNode {
+  const uniqueTokens = new Map(tokens.map((t) => [t.type + t.value, t]))
+  return factory.createTypeLiteralNode(
+    [...uniqueTokens.values()]
+      .map((t) => transform(t, option))
+      .filter((t) => t != null) as TypeElement[]
+  )
+}
+
 function transform(
   token: Token,
   option: Readonly<CompilerOptions>
@@ -74,18 +86,6 @@ function transformSection(
       )
     }
   }
-}
-
-function merge(
-  tokens: Token[],
-  option: Readonly<CompilerOptions>
-): TS.TypeLiteralNode {
-  const uniqueTokens = new Map(tokens.map((t) => [t.type + t.value, t]))
-  return factory.createTypeLiteralNode(
-    [...uniqueTokens.values()]
-      .map((t) => transform(t, option))
-      .filter((t) => t != null) as TypeElement[]
-  )
 }
 
 const StringType = () => factory.createKeywordTypeNode(SyntaxKind.StringKeyword)

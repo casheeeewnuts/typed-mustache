@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint --fix && prettier --write src/**/*.ts",
     "node": "ts-node",
-    "test": "vitest"
+    "test": "vitest",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@types/mustache": "^4.1.2",
