@@ -31,7 +31,7 @@ type OpeningTag = string
 type ClosingTag = string
 export type OpeningAndClosingTags = [OpeningTag, ClosingTag]
 
-const render: typeof mustache["render"] = <
+export const render: typeof mustache["render"] = <
   T extends Parameters<typeof mustache["render"]>[2]
 >(
   template: string,
