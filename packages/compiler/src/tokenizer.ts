@@ -11,7 +11,11 @@ export function tokenize(template: string, tags?: OpeningAndClosingTags): Root {
 function transform(span: TemplateSpans[number]): Token {
   const [tag, value, start, end, children, tagIndex, lineHasNonSpace] = span
 
-  if (lineHasNonSpace != null && tagIndex && typeof children == "string") {
+  if (
+    lineHasNonSpace != null &&
+    tagIndex != null &&
+    typeof children == "string"
+  ) {
     return {
       type: "partial",
       value,
