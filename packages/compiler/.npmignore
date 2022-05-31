@@ -1,0 +1,8 @@
+coverage
+node_modules
+src
+.eslintrc.js
+.prettierrc.js
+.pnpm-lock.yaml
+tsconfig.json
+vitest.config.ts
