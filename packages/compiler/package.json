@@ -7,7 +7,9 @@
     "lint": "eslint --fix && prettier --write src/**/*.ts",
     "node": "ts-node",
     "test": "vitest",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "build": "tsc",
+    "prepublish": "pnpm build"
   },
   "dependencies": {
     "@types/mustache": "^4.1.2",
