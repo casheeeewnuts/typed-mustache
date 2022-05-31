@@ -119,23 +119,23 @@ export interface InvertedSection extends Atom {
   children: Token[]
 }
 
-interface NonFalseValue extends Atom {
+export interface NonFalseValue extends Atom {
   type: "nonFalseValue"
   children: Token[]
 }
 
-interface Comment extends Atom {
+export interface Comment extends Atom {
   type: "comment"
 }
 
-interface Partial extends Atom {
+export interface Partial extends Atom {
   type: "partial"
   indentation: string
   tagIndex: number
   lineHasNonSpace: boolean
 }
 
-interface Delimiter extends Atom {
+export interface Delimiter extends Atom {
   type: "delimiter"
 }
 
