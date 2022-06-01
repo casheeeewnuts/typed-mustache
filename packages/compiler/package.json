@@ -8,6 +8,7 @@
     "node": "ts-node",
     "test": "vitest",
     "tsc": "tsc",
+    "typeCheck": "tsc --noEmit",
     "build": "tsc",
     "prepublish": "pnpm build"
   },
