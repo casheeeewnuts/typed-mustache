@@ -1,29 +1,28 @@
-import yargs from "yargs";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as process from "process";
-import { glob } from "glob";
-import { promisify } from "util";
+import yargs from "yargs";
 import { compile } from "@casheeeewnuts/typed-mustache-compiler";
 import { pascalCase } from "change-case";
+import { asyncGlob, readFileAsUtf8Encoded } from "./util/fs";
+
+const DEFAULT_OUTPUT_DIR = path.join(process.cwd(), "./@types/mustache");
+const DEFAULT_TARGET_GLOB = "./**/*.mustache";
 
 function parseArgs(): yargs.Argv {
   return yargs.help();
 }
 
-const asyncGlob = promisify(glob);
-
 async function main() {
-  const outdir = "./@types/mustache";
   const files = await asyncGlob("./**/*.mustache");
 
   await Promise.all(
     files.map(async (filePath) => {
-      const template = (
-        await fs.readFile(path.join(process.cwd(), filePath))
-      ).toString();
+      const template = await readFileAsUtf8Encoded(
+        path.join(process.cwd(), filePath)
+      );
       const { name } = path.parse(filePath);
-      const outFilePath = path.join(outdir, `${name}.ts`);
+      const outFilePath = path.join(DEFAULT_OUTPUT_DIR, `${name}.ts`);
 
       try {
         return await fs.writeFile(
