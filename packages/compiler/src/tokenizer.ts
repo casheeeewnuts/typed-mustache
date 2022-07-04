@@ -4,12 +4,19 @@ import { OpeningAndClosingTags, TemplateSpans } from "./mustache"
 export function tokenize(template: string, tags?: OpeningAndClosingTags): Root {
   return {
     type: "root",
-    children: mustache.parse(template, tags).map(transform),
+    children: mustache
+      .parse(template, tags)
+      .map(transform)
+      .filter((n) => n != null) as Token[],
   }
 }
 
-function transform(span: TemplateSpans[number]): Token {
+function transform(span: TemplateSpans[number]): Token | null {
   const [tag, value, start, end, children, tagIndex, lineHasNonSpace] = span
+
+  if (value == "") {
+    return null
+  }
 
   if (
     lineHasNonSpace != null &&
@@ -32,7 +39,7 @@ function transform(span: TemplateSpans[number]): Token {
         value,
         start,
         end,
-        children: children.map(transform),
+        children: children.map(transform).filter((n) => n != null) as Token[],
       }
     } else if (tag === "^") {
       return {
@@ -40,7 +47,7 @@ function transform(span: TemplateSpans[number]): Token {
         value,
         start,
         end,
-        children: children.map(transform),
+        children: children.map(transform).filter((n) => n != null) as Token[],
       }
     } else {
       return {
@@ -48,7 +55,7 @@ function transform(span: TemplateSpans[number]): Token {
         value,
         start,
         end,
-        children: children.map(transform),
+        children: children.map(transform).filter((n) => n != null) as Token[],
       }
     }
   } else {
