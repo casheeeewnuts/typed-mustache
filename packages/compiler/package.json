@@ -10,7 +10,7 @@
     "test": "vitest",
     "tsc": "tsc",
     "typeCheck": "tsc --noEmit",
-    "build": "tsc",
+    "build": "pnpm run build:cjs && pnpm run build:mjs",
     "build:cjs": "tsc -p ./tsconfig.json",
     "build:mjs": "tsc -p ./tsconfig.es6.json",
     "prepublish": "pnpm build"
