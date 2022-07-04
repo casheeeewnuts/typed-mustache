@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { compile } from "@casheeeewnuts/typed-mustache-compiler";
-import DotsH from "./dots-h.svg";
+import { compile } from "@casheeeewnuts/typed-mustache-compiler/dist/es6";
 
 function App() {
   const [template, setTemplate] = useState("Hello! {{name}}");
@@ -15,12 +14,6 @@ function App() {
               <p className="text-white font-black text-lg">
                 <b>typed-mustache</b>
               </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className="col-span-3"></div>
-            <div className="border-2 items-center h-full">
-              <DotsH onClick={() => console.log("clicked")} />
             </div>
           </div>
         </div>
