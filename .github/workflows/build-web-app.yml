@@ -42,8 +42,9 @@ jobs:
 
       - name: Build Compiler
         run: |
-          - ls
-          - pnpm --filter packages/compiler run build
+          pwd
+          ls
+          pnpm --filter packages/compiler run build
 
       - name: Build App
         run: pnpm --filter packages/web run build
