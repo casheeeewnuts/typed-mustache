@@ -41,7 +41,10 @@ jobs:
         run: pnpm install
 
       - name: Build Compiler
-        run: pnpm --filter packages/compiler run build
+        run: |
+          - pwd
+          - ls
+          - pnpm --filter packages/compiler run build
 
       - name: Build App
         run: pnpm --filter packages/web run build
