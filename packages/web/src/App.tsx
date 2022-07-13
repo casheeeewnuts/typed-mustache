@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { compile } from "@casheeeewnuts/typed-mustache-compiler/dist/es6";
+import { MarkGithubIcon } from "@primer/octicons-react";
 
 function App() {
   const [template, setTemplate] = useState("Hello! {{name}}");
@@ -14,6 +15,17 @@ function App() {
               <p className="text-white font-black text-lg">
                 <b>typed-mustache</b>
               </p>
+            </div>
+          </div>
+          <div className="flex flex-row-reverse">
+            <div className="p-2 mr-3">
+              <a
+                href="https://github.com/CasheeeewNuts/typed-mustache"
+                target="_blank"
+                rel="noreferrer noopener nofollow"
+              >
+                <MarkGithubIcon size="medium" fill="white" />
+              </a>
             </div>
           </div>
         </div>
