@@ -1,6 +1,5 @@
 import { Section, Token, Variable } from "./tokenizer";
 import TS, { factory, SyntaxKind, TypeNode } from "typescript";
-import { merge } from "./transpiler";
 
 export interface TransformOptions {
   noLambdaTypeToVariable: boolean;
@@ -28,24 +27,37 @@ export interface TransformOptions {
   noImplicitCaptureGlobalVariable: boolean;
 }
 
-export function transform(
-  token: Token,
+export function transform(option: Readonly<TransformOptions>) {
+  return function (token: Token): TS.TypeElement | null {
+    switch (token.type) {
+      case "variable":
+        return transformVariable(token, option);
+      case "nonFalseValue":
+        return PropertyType(`"${token.value}"`, BoolType());
+      case "section":
+        return transformSection(token, option);
+      case "text":
+      case "comment":
+      case "delimiter":
+      case "partial":
+      case "invertedSection":
+        return null;
+    }
+  };
+}
+
+export function merge(
+  tokens: Token[],
   option: Readonly<TransformOptions>
-): TS.TypeElement | null {
-  switch (token.type) {
-    case "variable":
-      return transformVariable(token, option);
-    case "nonFalseValue":
-      return PropertyType(`"${token.value}"`, BoolType());
-    case "section":
-      return transformSection(token, option);
-    case "text":
-    case "comment":
-    case "delimiter":
-    case "partial":
-    case "invertedSection":
-      return null;
-  }
+): TS.TypeLiteralNode {
+  const uniqueTokens = new Map(tokens.map((t) => [t.type + t.value, t]));
+  return factory.createTypeLiteralNode(
+    [...uniqueTokens.values()].map(transform(option)).filter(isTypeElement)
+  );
+}
+
+function isTypeElement(e: TS.TypeElement | null): e is TS.TypeElement {
+  return e != null;
 }
 
 function transformVariable(
