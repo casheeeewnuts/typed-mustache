@@ -3,11 +3,11 @@ import { OpeningAndClosingTags, Token as MustacheToken } from "./mustache";
 
 export function tokenize(template: string, tags?: OpeningAndClosingTags): Root {
   return {
-    children: mustache.parse(template, tags).map(transform).filter(isToken),
+    children: mustache.parse(template, tags).map(toToken).filter(isToken),
   };
 }
 
-function transform(span: MustacheToken): Token | null {
+function toToken(span: MustacheToken): Token | null {
   const [tag, value, start, end, children, tagIndex, lineHasNonSpace] = span;
 
   if (value == "") {
@@ -37,7 +37,7 @@ function transform(span: MustacheToken): Token | null {
         value,
         start,
         end,
-        children: children.map(transform).filter(isToken),
+        children: children.map(toToken).filter(isToken),
       };
     }
 
@@ -47,7 +47,7 @@ function transform(span: MustacheToken): Token | null {
         value,
         start,
         end,
-        children: children.map(transform).filter(isToken),
+        children: children.map(toToken).filter(isToken),
       };
     }
 
@@ -56,7 +56,7 @@ function transform(span: MustacheToken): Token | null {
       value,
       start,
       end,
-      children: children.map(transform).filter(isToken),
+      children: children.map(toToken).filter(isToken),
     };
   }
 
