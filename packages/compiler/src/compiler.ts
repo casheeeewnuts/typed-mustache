@@ -1,10 +1,10 @@
-import { emit, EmitterOptions } from "./emitter"
-import { transpile, TranspilerOptions } from "./transpiler"
-import { tokenize } from "./tokenizer"
+import { emit, EmitterOptions } from "./emitter";
+import { transpile, TranspilerOptions } from "./transpiler";
+import { tokenize } from "./tokenizer";
 
-export type MustacheTemplate = string
-export type TypeDeclaration = string
-export type CompilerOptions = EmitterOptions & TranspilerOptions
+export type MustacheTemplate = string;
+export type TypeDeclaration = string;
+export type CompilerOptions = EmitterOptions & TranspilerOptions;
 
 const DEFAULT_COMPILER_OPTIONS: CompilerOptions = {
   noLambdaTypeToVariable: true,
@@ -12,7 +12,7 @@ const DEFAULT_COMPILER_OPTIONS: CompilerOptions = {
   noImplicitCaptureGlobalVariable: true,
   omitTrailingSemicolon: false,
   noEmitHelpers: false,
-}
+};
 
 export function compile(
   template: MustacheTemplate,
@@ -23,7 +23,7 @@ export function compile(
   const typeNode = transpile(tokenize(template, tags), {
     ...DEFAULT_COMPILER_OPTIONS,
     ...options,
-  })
+  });
 
-  return emit({ ...DEFAULT_COMPILER_OPTIONS, ...options })(typeNode, name)
+  return emit({ ...DEFAULT_COMPILER_OPTIONS, ...options })(typeNode, name);
 }
