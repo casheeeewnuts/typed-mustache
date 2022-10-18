@@ -5,6 +5,26 @@ import { merge } from "./transpiler";
 export interface TransformOptions {
   noLambdaTypeToVariable: boolean;
   noWrappedFunction: boolean;
+  /**
+   * TODO implement on transformSection
+   * Currently, implemented as enabled.
+   * So, template "{{#user}} {{name}} {{/user}}" will be compiled to
+   *
+   * export type TemplateValue = {
+   *   user: boolean | {
+   *     name: string
+   *   }
+   * }
+   *
+   * When disabled noImplicitCaptureGlobalVariable, it will be compiled to
+   *
+   * export type TemplateValue = {
+   *   name?: string,
+   *   user: boolean | {
+   *     name?: string
+   *   }
+   * }
+   */
   noImplicitCaptureGlobalVariable: boolean;
 }
 
