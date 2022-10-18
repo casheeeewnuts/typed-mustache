@@ -1,6 +1,7 @@
 import { emit, EmitterOptions } from "./emitter";
 import { transpile, TranspilerOptions } from "./transpiler";
 import { tokenize } from "./tokenizer";
+import { OpeningAndClosingTags } from "./mustache";
 
 export type MustacheTemplate = string;
 export type TypeDeclaration = string;
@@ -18,7 +19,7 @@ export function compile(
   template: MustacheTemplate,
   name: string,
   options?: CompilerOptions,
-  tags?: [string, string]
+  tags?: OpeningAndClosingTags
 ): TypeDeclaration {
   const typeNode = transpile(tokenize(template, tags), {
     ...DEFAULT_COMPILER_OPTIONS,
