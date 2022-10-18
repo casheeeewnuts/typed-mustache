@@ -1,7 +1,7 @@
 {
   "name": "@casheeeewnuts/typed-mustache-compiler",
   "version": "0.0.1",
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/es6/index.js",
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "vitest",
     "tsc": "tsc",
     "typeCheck": "tsc --noEmit",
-    "build": "pnpm run build:cjs && pnpm run build:mjs",
+    "build": "npm-run-all --parallel build:*",
     "build:cjs": "tsc -p ./tsconfig.json",
     "build:mjs": "tsc -p ./tsconfig.es6.json",
     "prepublish": "pnpm build"
@@ -26,6 +26,7 @@
     "@typescript-eslint/parser": "^5.26.0",
     "c8": "^7.11.3",
     "eslint": "^8.16.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.6.2",
     "ts-node": "^10.8.0",
     "vitest": "^0.13.0"
