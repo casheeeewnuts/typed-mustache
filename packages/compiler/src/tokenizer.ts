@@ -1,21 +1,17 @@
-import mustache from "mustache"
-import { OpeningAndClosingTags, TemplateSpans } from "./mustache"
+import mustache from "mustache";
+import { OpeningAndClosingTags, Token as MustacheToken } from "./mustache";
 
 export function tokenize(template: string, tags?: OpeningAndClosingTags): Root {
   return {
-    type: "root",
-    children: mustache
-      .parse(template, tags)
-      .map(transform)
-      .filter((n) => n != null) as Token[],
-  }
+    children: mustache.parse(template, tags).map(transform).filter(isToken),
+  };
 }
 
-function transform(span: TemplateSpans[number]): Token | null {
-  const [tag, value, start, end, children, tagIndex, lineHasNonSpace] = span
+function transform(span: MustacheToken): Token | null {
+  const [tag, value, start, end, children, tagIndex, lineHasNonSpace] = span;
 
   if (value == "") {
-    return null
+    return null;
   }
 
   if (
@@ -31,71 +27,84 @@ function transform(span: TemplateSpans[number]): Token | null {
       indentation: children,
       tagIndex,
       lineHasNonSpace,
-    }
-  } else if (Array.isArray(children)) {
+    };
+  }
+
+  if (Array.isArray(children)) {
     if (value.endsWith("?")) {
       return {
         type: "nonFalseValue",
         value,
         start,
         end,
-        children: children.map(transform).filter((n) => n != null) as Token[],
-      }
-    } else if (tag === "^") {
+        children: children.map(transform).filter(isToken),
+      };
+    }
+
+    if (tag === "^") {
       return {
         type: "invertedSection",
         value,
         start,
         end,
-        children: children.map(transform).filter((n) => n != null) as Token[],
-      }
-    } else {
-      return {
-        type: "section",
-        value,
-        start,
-        end,
-        children: children.map(transform).filter((n) => n != null) as Token[],
-      }
+        children: children.map(transform).filter(isToken),
+      };
     }
-  } else {
-    if (tag === "!") {
-      return {
-        type: "comment",
-        value,
-        start,
-        end,
-      }
-    } else if (tag === "text") {
-      return {
-        type: "text",
-        value,
-        start,
-        end,
-      }
-    } else if (tag === "=") {
-      return {
-        type: "delimiter",
-        value,
-        start,
-        end,
-      }
-    } else if (tag === "name" || tag === "&") {
-      return {
-        type: "variable",
-        value,
-        start,
-        end,
-      }
-    } else {
-      throw new Error(`Logic Exception ${[tag]}`)
-    }
+
+    return {
+      type: "section",
+      value,
+      start,
+      end,
+      children: children.map(transform).filter(isToken),
+    };
   }
+
+  if (tag === "!") {
+    return {
+      type: "comment",
+      value,
+      start,
+      end,
+    };
+  }
+
+  if (tag === "text") {
+    return {
+      type: "text",
+      value,
+      start,
+      end,
+    };
+  }
+
+  if (tag === "=") {
+    return {
+      type: "delimiter",
+      value,
+      start,
+      end,
+    };
+  }
+
+  if (tag === "name" || tag === "&") {
+    return {
+      type: "variable",
+      value,
+      start,
+      end,
+    };
+  }
+
+  throw new Error(`Unreachable Statement`);
+}
+
+function isToken(maybeToken: Token | null): maybeToken is Token {
+  return maybeToken != null;
 }
 
 export interface Root {
-  type: "root"
-  children: Token[]
+  children: Token[];
 }
 
 export type Token =
@@ -106,49 +115,49 @@ export type Token =
   | Comment
   | Partial
   | Delimiter
-  | NonFalseValue
+  | NonFalseValue;
 
-interface RawText extends Atom {
-  type: "text"
+interface Atom {
+  type: string;
+  value: string;
+  start: number;
+  end: number;
+}
+
+export interface RawText extends Atom {
+  type: "text";
 }
 
 export interface Variable extends Atom {
-  type: "variable"
+  type: "variable";
 }
 
 export interface Section extends Atom {
-  type: "section"
-  children: Token[]
+  type: "section";
+  children: Token[];
 }
 
 export interface InvertedSection extends Atom {
-  type: "invertedSection"
-  children: Token[]
+  type: "invertedSection";
+  children: Token[];
 }
 
 export interface NonFalseValue extends Atom {
-  type: "nonFalseValue"
-  children: Token[]
+  type: "nonFalseValue";
+  children: Token[];
 }
 
 export interface Comment extends Atom {
-  type: "comment"
+  type: "comment";
 }
 
 export interface Partial extends Atom {
-  type: "partial"
-  indentation: string
-  tagIndex: number
-  lineHasNonSpace: boolean
+  type: "partial";
+  indentation: string;
+  tagIndex: number;
+  lineHasNonSpace: boolean;
 }
 
 export interface Delimiter extends Atom {
-  type: "delimiter"
-}
-
-interface Atom {
-  type: string
-  value: string
-  start: number
-  end: number
+  type: "delimiter";
 }
