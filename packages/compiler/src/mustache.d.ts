@@ -8,19 +8,19 @@ type PARTIAL = ">";
 type EQUAL = "=";
 
 type TemplateSpanType =
-  | RAW_VALUE
-  | ESCAPED_VALUE
-  | SECTION
-  | UNESCAPED_VALUE
-  | INVERTED
-  | COMMENT
-  | PARTIAL
-  | EQUAL;
+    | RAW_VALUE
+    | ESCAPED_VALUE
+    | SECTION
+    | UNESCAPED_VALUE
+    | INVERTED
+    | COMMENT
+    | PARTIAL
+    | EQUAL;
 
 export type TemplateSpans = Array<
-  | [TemplateSpanType, string, number, number]
-  | [TemplateSpanType, string, number, number, TemplateSpans, number]
-  | [TemplateSpanType, string, number, number, string, number, boolean]
+    | [TemplateSpanType, string, number, number]
+    | [TemplateSpanType, string, number, number, TemplateSpans, number]
+    | [TemplateSpanType, string, number, number, string, number, boolean]
 >;
 
 export type Token = TemplateSpans[number];

@@ -8,23 +8,23 @@ export type TypeDeclaration = string;
 export type CompilerOptions = EmitterOptions & TranspilerOptions;
 
 const DEFAULT_COMPILER_OPTIONS: CompilerOptions = {
-  noLambdaTypeToVariable: true,
-  noWrappedFunction: false,
-  noImplicitCaptureGlobalVariable: true,
-  omitTrailingSemicolon: false,
-  noEmitHelpers: false,
+    noLambdaTypeToVariable: true,
+    noWrappedFunction: false,
+    noImplicitCaptureGlobalVariable: true,
+    omitTrailingSemicolon: false,
+    noEmitHelpers: false,
 };
 
 export function compile(
-  template: MustacheTemplate,
-  name: string,
-  options?: CompilerOptions,
-  tags?: OpeningAndClosingTags
+    template: MustacheTemplate,
+    name: string,
+    options?: CompilerOptions,
+    tags?: OpeningAndClosingTags,
 ): TypeDeclaration {
-  const typeNode = transpile(tokenize(template, tags), {
-    ...DEFAULT_COMPILER_OPTIONS,
-    ...options,
-  });
+    const typeNode = transpile(tokenize(template, tags), {
+        ...DEFAULT_COMPILER_OPTIONS,
+        ...options,
+    });
 
-  return emit({ ...DEFAULT_COMPILER_OPTIONS, ...options })(typeNode, name);
+    return emit({ ...DEFAULT_COMPILER_OPTIONS, ...options })(typeNode, name);
 }

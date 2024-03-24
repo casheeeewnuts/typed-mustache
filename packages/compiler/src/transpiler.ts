@@ -7,8 +7,8 @@ export { transform } from "./transform";
 export type TranspilerOptions = TransformOptions;
 
 export function transpile(
-  token: Root,
-  option: Readonly<TranspilerOptions>
+    token: Root,
+    option: Readonly<TranspilerOptions>,
 ): TS.TypeLiteralNode {
-  return merge(token.children, option);
+    return merge(token.children, option);
 }
